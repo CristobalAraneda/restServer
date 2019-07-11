@@ -9,7 +9,7 @@ const app = express()
 
 app.post('/login', (req, res) => {
 
-    body = req.body;
+    let body = req.body;
 
     Usuario.findOne({ email: body.email }, (err, usuarioDB) => {
 
@@ -37,19 +37,12 @@ app.post('/login', (req, res) => {
                 }
             });
         }
-
-        let token = jwt.sign({
-            usuarioDB
-        }, process.env.SEED, { expiresIn: process.env.CADUCIDAD_TOKEN });
-
         res.json({
             ok: true,
-            usuarioDB,
-            token
-        });
-
-
-    });
+            Usuario: usuarioDB,
+            token: '123'
+        })
+    })
 
 
 });
