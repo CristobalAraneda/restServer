@@ -2,12 +2,19 @@ const express = require('express')
 const bcrypt = require('bcrypt');
 const _ = require('underscore');
 const Usuario = require('../models/usuario');
-const { verificaToken } = require('../middelewares/autenticacion');
+const { verificaToken, verificaAdmin_rol } = require('../middelewares/autenticacion');
 
 
 const app = express()
-    // TODO: 124:payload y varible en postmam token
+
 app.get('/usuario', verificaToken, (req, res) => {
+
+    // return res.json({
+    //     usuario: req.usuario,
+    //     nombre: req.usuario.nombre,
+    //     email: req.usuario.email
+
+    // })
 
     let desde = req.query.desde || 0;
     let limite = req.query.limite || 5;
@@ -35,7 +42,7 @@ app.get('/usuario', verificaToken, (req, res) => {
             });
         });
 });
-app.post('/usuario', function(req, res) {
+app.post('/usuario', [verificaToken, verificaAdmin_rol], function(req, res) {
 
     let persona = req.body;
 
@@ -65,7 +72,7 @@ app.post('/usuario', function(req, res) {
 
 
 });
-app.put('/usuario/:id', function(req, res) {
+app.put('/usuario/:id', [verificaToken, verificaAdmin_rol], function(req, res) {
 
     let id = req.params.id;
     let body = _.pick(req.body, ['nombre', 'email', 'img', 'role', 'estado']);
@@ -88,36 +95,37 @@ app.put('/usuario/:id', function(req, res) {
 
 
 });
-//nota eliminar permanente no recomendable hacer
+//FIXME: la eliminación no ES recomendable en un app , solo para mantenimiento
 // app.delete('/usuario/:id', function(req, res) {
 
-//     let id = req.params.id;
-//     Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+    //     let id = req.params.id;
+    //     Usuario.findByIdAndRemove(id, (err, usuarioBorrado) => {
+    
+    //         if (err) {
+    //             return res.status(400).json({
+    //                 ok: false,
+    //                 err
+    //             });
+    //         };
+    //         if (!usuarioBorrado) {
+    //             return res.status(400).json({
+    //                 ok: false,
+    //                 err: {
+    //                     message: 'Usuario no encontredo'
+    //                 }
+    //             });
+    //         }
+    
+    //         res.json({
+    //             ok: true,
+    //             usuarioBorrado
+    //         })
+    //     });
+    
+    // });
+    
 
-//         if (err) {
-//             return res.status(400).json({
-//                 ok: false,
-//                 err
-//             });
-//         };
-//         if (!usuarioBorrado) {
-//             return res.status(400).json({
-//                 ok: false,
-//                 err: {
-//                     message: 'Usuario no encontredo'
-//                 }
-//             });
-//         }
-
-//         res.json({
-//             ok: true,
-//             usuarioBorrado
-//         })
-//     });
-
-// });
-
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_rol], function(req, res) {
 
     let id = req.params.id;
 

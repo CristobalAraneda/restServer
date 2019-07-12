@@ -14,7 +14,7 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'dev';
 // Vencimiento 
 // s * m * h * d
 //===========================
-process.env.CADUCIDAD_TOKEN = '60 * 60 * 24 * 30';
+process.env.CADUCIDADA_TOKEN = 60 * 60 * 24 * 30;
 //===========================
 // Seed
 //===========================
